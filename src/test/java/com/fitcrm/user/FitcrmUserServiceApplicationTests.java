@@ -1,4 +1,4 @@
-package com.fitcrm.fitcrm_user_service;
+package com.fitcrm.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
