@@ -1,11 +1,7 @@
 CREATE TABLE user_roles (
-                            user_id BIGINT NOT NULL,
-                            role_id SMALLINT NOT NULL,
-                            PRIMARY KEY (user_id, role_id),
-                            CONSTRAINT fk_user_roles_user_id
-                                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                            CONSTRAINT fk_user_roles_role_id
-                                FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+                            id BIGSERIAL PRIMARY KEY,
+                            user_id BIGINT REFERENCES users(id) NOT NULL,
+                            role_id BIGINT REFERENCES roles(id) NOT NULL
 );
 
 CREATE INDEX idx_user_roles_user_id ON user_roles(user_id);

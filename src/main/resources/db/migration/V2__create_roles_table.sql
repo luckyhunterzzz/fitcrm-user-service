@@ -1,5 +1,5 @@
 CREATE TABLE roles (
-                       id SMALLSERIAL PRIMARY KEY,
+                       id BIGSERIAL PRIMARY KEY,
                        name VARCHAR(20) NOT NULL UNIQUE
 );
 
