@@ -72,7 +72,8 @@ jobs:
           ./mvnw --batch-mode flyway:validate \
             -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
             -Dflyway.user=test \
-            -Dflyway.password=test
+            -Dflyway.password=test \
+            -Dflyway.locations=classpath:db/migration
   docker:
     needs: [build-and-test, flyway-check]
     runs-on: ubuntu-latest
