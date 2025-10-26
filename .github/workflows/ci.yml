@@ -66,7 +66,8 @@ jobs:
             -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
             -Dflyway.user=test \
             -Dflyway.password=test \
-            -Dflyway.locations=classpath:db/migration
+            -Dflyway.locations=classpath:db/migration \
+            -Dflyway.cleanDisabled=false
 
           ./mvnw --batch-mode flyway:validate \
             -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
