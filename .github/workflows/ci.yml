@@ -60,14 +60,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Validate Flyway migrations
-        run: |
-          ./mvnw --batch-mode flyway:validate \
-            -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
-            -Dflyway.user=test \
-            -Dflyway.password=test
-
-      - name: Clean and migrate Flyway
+      - name: Clean, migrate and validate Flyway
         run: |
           ./mvnw --batch-mode flyway:clean flyway:migrate \
             -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
@@ -75,6 +68,10 @@ jobs:
             -Dflyway.password=test \
             -Dflyway.locations=classpath:db/migration
 
+          ./mvnw --batch-mode flyway:validate \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
+            -Dflyway.user=test \
+            -Dflyway.password=test
   docker:
     needs: [build-and-test, flyway-check]
     runs-on: ubuntu-latest
