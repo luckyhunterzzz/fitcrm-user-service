@@ -30,8 +30,52 @@ jobs:
           path: target/fitcrm-user-service-0.0.1-SNAPSHOT.jar
           retention-days: 1
 
-  docker:
+  flyway-check:
     needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: fitcrm_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Clean, migrate and validate Flyway
+        run: |
+          ./mvnw --batch-mode flyway:clean flyway:migrate \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
+            -Dflyway.user=test \
+            -Dflyway.password=test \
+            -Dflyway.locations=classpath:db/migration \
+            -Dflyway.cleanDisabled=false
+
+          ./mvnw --batch-mode flyway:validate \
+            -Dflyway.url=jdbc:postgresql://localhost:5432/fitcrm_test \
+            -Dflyway.user=test \
+            -Dflyway.password=test \
+            -Dflyway.locations=classpath:db/migration
+  docker:
+    needs: [build-and-test, flyway-check]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
